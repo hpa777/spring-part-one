@@ -26,7 +26,7 @@
         <property name="hibernate.connection.useUnicode">true</property>
 
         <mapping class="ru.geekbrains.entity.User"/>
-
+        <mapping class="ru.geekbrains.entity.Product"/>
 
     </session-factory>
 </hibernate-configuration>
