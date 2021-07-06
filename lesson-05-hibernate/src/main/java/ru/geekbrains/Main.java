@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) {
         EntityManagerFactory emf = new Configuration()
                 .configure("hibernate.cfg.xml")
@@ -36,10 +37,10 @@ public class Main {
         users = em.createNativeQuery("select * from users", User.class).getResultList();
         System.out.println(users);
 
-        User user = em.getReference(User.class, 7L);
-        em.getTransaction().begin();
-        em.remove(user);
-        em.getTransaction().commit();
+        //User user = em.getReference(User.class, 7L);
+        //em.getTransaction().begin();
+        //em.remove(user);
+        //em.getTransaction().commit();
         em.close();
     }
 }
