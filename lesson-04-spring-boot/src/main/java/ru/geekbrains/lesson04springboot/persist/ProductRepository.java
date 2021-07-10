@@ -1,45 +1,15 @@
 package ru.geekbrains.lesson04springboot.persist;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-public class ProductRepository {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    private final Map<Long, Product> productMap = new ConcurrentHashMap<>();
+    List<Product> findProductByPriceIsGreaterThanEqual(BigDecimal minPrice);
 
-    private final AtomicLong identity = new AtomicLong(0);
+    List<Product> findProductByPriceIsLessThanEqual(BigDecimal maxPrice);
 
-    public void addProduct(Product product) {
-        if (product.getId() == null) {
-            product.setId(identity.incrementAndGet());
-        }
-        productMap.put(product.getId(), product);
-    }
-
-    @PostConstruct
-    public void initRepostory() {
-        this.addProduct(new Product("Товар1", 12.4f));
-        this.addProduct(new Product("Товар2", 12.4f));
-        this.addProduct(new Product("Товар3", 12.4f));
-    }
-
-    public Product getProductById(Long id) {
-        return productMap.get(id);
-    }
-
-    public List<Product> getAllProducts() {
-        return new ArrayList<>(productMap.values());
-    }
-
-    public void deleteProductById(Long id) {
-        productMap.remove(id);
-    }
-
+    List<Product> findProductByPriceIsBetween(BigDecimal minPrice, BigDecimal maxPrice);
 }

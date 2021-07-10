@@ -37,7 +37,13 @@
         <div class="col-12">
             <a class="btn btn-primary" th:href="@{/product/add}">Add Product</a>
         </div>
-
+        <div class="col-12 mt-3">
+            <form class="form-inline" th:method="get">
+                <input type="text" class="form-control mr-2" name="min_price" th:value="${param.min_price}" placeholder="min price">
+                <input type="text" class="form-control mr-2" name="max_price" th:value="${param.max_price}" placeholder="max price">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </form>
+        </div>
         <div class="col-12">
             <table class="table table-bordered my-2">
                 <thead>

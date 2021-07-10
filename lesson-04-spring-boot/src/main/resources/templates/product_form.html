@@ -36,7 +36,7 @@
     <div class="row py-2">
         <div class="col-12">
             <form th:action="@{/product}" method="post" th:object="${product}">
-                <input type="hidden" id="id" th:if="${product.id} != null" th:field="*{id}">
+                <input type="hidden" name="id" th:field="*{id}"/>
                 <div class="form-group">
                     <label>Name</label>
                     <input type="text" class="form-control" th:field="*{name}"
@@ -66,3 +66,4 @@
         crossorigin="anonymous"></script>
 
 </body>
+</html>
