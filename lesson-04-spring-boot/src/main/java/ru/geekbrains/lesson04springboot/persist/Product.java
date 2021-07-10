@@ -1,16 +1,27 @@
 package ru.geekbrains.lesson04springboot.persist;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
-    private float price;
+    @Column(nullable = false)
+    private BigDecimal price;
 
     public Product() {
     }
 
-    public Product(String name, float price) {
+    public Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
@@ -19,7 +30,7 @@ public class Product {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -31,11 +42,11 @@ public class Product {
         this.name = name;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
