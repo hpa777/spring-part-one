@@ -3,6 +3,9 @@ package ru.geekbrains.lesson04springboot.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.geekbrains.lesson04springboot.persist.Product;
 import ru.geekbrains.lesson04springboot.persist.ProductRepository;
-
+import ru.geekbrains.lesson04springboot.persist.ProductSpecification;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,18 +35,20 @@ public class ProductController {
     public String listProducts(Model model
                                , @RequestParam("min_price") Optional <BigDecimal> minPrice
                                , @RequestParam("max_price") Optional <BigDecimal> maxPrice
+                               , @RequestParam("page") Optional<Integer> page
+                               , @RequestParam("page_size") Optional<Integer> size
+                               , @RequestParam(value = "sort_by", defaultValue = "id") String sortBy
+                               , @RequestParam("sort_dir") Optional<Sort.Direction> sortDir
                                ) {
-        List<Product> list;
-        if (minPrice.isPresent() && maxPrice.isPresent()) {
-            list = productRepository.findProductByPriceIsBetween(minPrice.get(), maxPrice.get());
-        } else if (minPrice.isPresent() && !maxPrice.isPresent()) {
-            list = productRepository.findProductByPriceIsGreaterThanEqual(minPrice.get());
-        } else  if (!minPrice.isPresent() && maxPrice.isPresent()) {
-            list = productRepository.findProductByPriceIsLessThanEqual(maxPrice.get());
-        } else {
-            list = productRepository.findAll();
+        PageRequest pageRequest = PageRequest.of(page.orElse(1) - 1, size.orElse(3), Sort.by(sortDir.orElse(Sort.Direction.ASC), sortBy));
+        Specification<Product> spec  = Specification.where(null);
+        if (minPrice.isPresent()) {
+            spec = spec.and(ProductSpecification.minPrice(minPrice.get()));
         }
-        model.addAttribute("products", list);
+        if (maxPrice.isPresent()) {
+            spec = spec.and(ProductSpecification.maxPrice(maxPrice.get()));
+        }
+        model.addAttribute("products", productRepository.findAll(spec, pageRequest));
         return "products";
     }
 
