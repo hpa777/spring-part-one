@@ -1,0 +1,30 @@
+GET http://localhost:8080/spring-mvc-app/api/v1/product/7
+
+###
+
+GET http://localhost:8080/spring-mvc-app/api/v1/product/all
+
+###
+
+POST http://localhost:8080/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "name": "create by rest",
+  "price": 3424.00
+}
+
+###
+
+PUT http://localhost:8080/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "id": 11,
+"name": "create by rest",
+"price": 333.00
+}
+
+###
+
+DELETE http://localhost:8080/spring-mvc-app/api/v1/product/11
