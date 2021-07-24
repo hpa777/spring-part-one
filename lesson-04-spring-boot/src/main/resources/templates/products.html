@@ -1,45 +1,10 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
-    <title>EShop application</title>
-    <style>
-        .page-size {
-            display: flex;
-            align-items: baseline;
-        }
-        .page-size__title {
-            padding-right: .5em;
-        }
-    </style>
-</head>
+<head th:replace="chunks/template_chunks :: head('Product list')"></head>
 
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">EShop</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">List</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav th:replace="chunks/template_chunks :: header"></nav>
 
 <div class="container">
     <div class="row py-2">
@@ -48,10 +13,10 @@
         </div>
         <div class="col-12 mt-3">
             <form class="form-inline" th:method="get">
-                <input type="number" step="0.01" class="form-control mr-2" name="min_price"
-                       th:value="${param.min_price}" placeholder="min price">
-                <input type="number" step="0.01" class="form-control mr-2" name="max_price"
-                       th:value="${param.max_price}" placeholder="max price">
+                <input type="number" step="0.01" class="form-control mr-2" name="minPrice"
+                       th:value="${param.minPrice}" placeholder="min price">
+                <input type="number" step="0.01" class="form-control mr-2" name="maxPrice"
+                       th:value="${param.maxPrice}" placeholder="max price">
                 <button type="submit" class="btn btn-primary">Apply</button>
             </form>
         </div>
@@ -59,45 +24,9 @@
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">
-                        <a th:href="@{/product(page=${param.page}
-                                , page_size=${param.page_size}
-                                , sort_by='id'
-                                , sort_dir=${#strings.equals(param.sort_dir, 'DESC')} ? 'ASC' : 'DESC'
-                                , min_price=${param.min_price}
-                                , max_price=${param.max_price})}">
-                            <span>Id</span>
-                            <i th:if="${#strings.equals(param.sort_by, 'id')}"
-                               th:classappend="${#strings.equals(param.sort_dir, 'ASC')} ? 'fa-sort-up' : 'fa-sort-down'"
-                               class="fa"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <a th:href="@{/product(page=${param.page}
-                                , page_size=${param.page_size}
-                                , sort_by='name'
-                                , sort_dir=${#strings.equals(param.sort_dir, 'DESC')} ? 'ASC' : 'DESC'
-                                , min_price=${param.min_price}
-                                , max_price=${param.max_price})}">
-                            <span>Name</span>
-                            <i th:if="${#strings.equals(param.sort_by, 'name')}"
-                               th:classappend="${#strings.equals(param.sort_dir, 'ASC')} ? 'fa-sort-up' : 'fa-sort-down'"
-                               class="fa"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <a th:href="@{/product(page=${param.page}
-                                , page_size=${param.page_size}
-                                , sort_by='price'
-                                , sort_dir=${#strings.equals(param.sort_dir, 'DESC')} ? 'ASC' : 'DESC'
-                                , min_price=${param.min_price}
-                                , max_price=${param.max_price})}">
-                            <span>Price</span>
-                            <i th:if="${#strings.equals(param.sort_by, 'price')}"
-                               th:classappend="${#strings.equals(param.sort_dir, 'ASC')} ? 'fa-sort-up' : 'fa-sort-down'"
-                               class="fa"></i>
-                        </a>
-                    </th>
+                    <th scope="col" th:replace="chunks/table_tools :: sort_header('Id', 'id')"></th>
+                    <th scope="col" th:replace="chunks/table_tools :: sort_header('Name', 'name')"></th>
+                    <th scope="col" th:replace="chunks/table_tools :: sort_header('Price', 'price')"></th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -126,11 +55,11 @@
                         <span th:if="${products.isFirst()}" class="page-link">Previous</span>
                         <a th:unless="${products.isFirst()}" class="page-link"
                            th:href="@{/product(page=${products.number}
-                            , page_size=${param.page_size}
-                            , sort_by=${param.sort_by}
-                            , sort_dir=${param.sort_dir}
-                            , min_price=${param.min_price}
-                            , max_price=${param.max_price})}">Previous</a>
+                            , pageSize=${param.pageSize}
+                            , sortBy=${param.sortBy}
+                            , sortDir=${param.sortDir}
+                            , minPrice=${param.minPrice}
+                            , maxPrice=${param.maxPrice})}">Previous</a>
                     </li>
                     <li th:each="num : ${#numbers.sequence(1, products.totalPages)}"
                         th:classappend="${num == products.number + 1} ? 'active'"
@@ -138,21 +67,21 @@
                         <a class="page-link"
                            th:text="${num}"
                            th:href="@{/product(page=${num}
-                            , page_size=${param.page_size}
-                            , sort_by=${param.sort_by}
-                            , sort_dir=${param.sort_dir}
-                            , min_price=${param.min_price}
-                            , max_price=${param.max_price})}">1</a>
+                            , pageSize=${param.pageSize}
+                            , sortBy=${param.sortBy}
+                            , sortDir=${param.sortDir}
+                            , minPrice=${param.minPrice}
+                            , maxPrice=${param.maxPrice})}">1</a>
                     </li>
                     <li th:classappend="${products.isLast()} ? 'disabled'" class="page-item">
                         <span th:if="${products.isLast()}" class="page-link">Next</span>
                         <a th:unless="${products.isLast()}" class="page-link"
                            th:href="@{/product(page=${products.number + 2}
-                            , page_size=${param.page_size}
-                            , sort_by=${param.sort_by}
-                            , sort_dir=${param.sort_dir}
-                            , min_price=${param.min_price}
-                            , max_price=${param.max_price})}">Next</a>
+                            , pageSize=${param.pageSize}
+                            , sortBy=${param.sortBy}
+                            , sortDir=${param.sortDir}
+                            , minPrice=${param.minPrice}
+                            , maxPrice=${param.maxPrice})}">Next</a>
                     </li>
                 </ul>
             </nav>
@@ -166,27 +95,17 @@
                     <a class="page-link"
                        th:text="${pg}"
                        th:href="@{/product(page=1
-                            , page_size=${pg}
-                            , sort_by=${param.sort_by}
-                            , sort_dir=${param.sort_dir}
-                            , min_price=${param.min_price}
-                            , max_price=${param.max_price})}">1</a>
+                            , pageSize=${pg}
+                            , sortBy=${param.sortBy}
+                            , sortDir=${param.sortDir}
+                            , minPrice=${param.minPrice}
+                            , maxPrice=${param.maxPrice})}">1</a>
                 </li>
             </ul>
         </div>
     </div>
 </div>
 
-<!-- Optional JavASCript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+<th:block th:replace="chunks/template_chunks :: scripts"></th:block>
 </body>
 </html>
