@@ -1,7 +1,11 @@
 package ru.geekbrains.lesson04springboot.controller;
 
+
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+
+import java.util.Set;
 
 public class UserDto {
 
@@ -19,14 +23,21 @@ public class UserDto {
     @NotBlank
     private String repeatPassword;
 
+    private Set<RoleDto> roles;
+
     public UserDto() {
     }
 
-    public UserDto(Long id, String username, Integer age, String repeatPassword) {
+    public UserDto(Long id, String username, Integer age) {
         this.id = id;
         this.username = username;
         this.age = age;
-        this.repeatPassword = repeatPassword;
+    }
+    public UserDto(Long id, String username, Integer age, Set<RoleDto> roles) {
+        this.id = id;
+        this.username = username;
+        this.age = age;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -67,5 +78,13 @@ public class UserDto {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
+    }
+
+    public Set<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDto> roles) {
+        this.roles = roles;
     }
 }

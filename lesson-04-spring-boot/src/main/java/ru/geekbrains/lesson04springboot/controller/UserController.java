@@ -4,15 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ru.geekbrains.lesson04springboot.persist.User;
+import ru.geekbrains.lesson04springboot.persist.RoleRepository;
 import ru.geekbrains.lesson04springboot.service.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -22,12 +25,16 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
+    @Secured({"ROLE_SUPER_ADMIN", "ROLE_ADMIN"})
     public String listPage(Model model,
                            UserListParams userListParams) {
         logger.info("User list page requested");
@@ -45,35 +52,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Secured({"ROLE_SUPER_ADMIN"})
     public String editUser(@PathVariable("id") Long id, Model model) {
         logger.info("Edit user page requested");
 
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
+        model.addAttribute("roles", roleRepository.findAll().stream().map(role -> new RoleDto(role.getId(), role.getName())).collect(Collectors.toList()));
         return "user_form";
     }
 
     @PostMapping
-    public String update(@Valid @ModelAttribute("user") UserDto user, BindingResult result) {
+    public String update(@Valid @ModelAttribute("user") UserDto user, BindingResult result, Model model) {
         logger.info("Saving user");
         if (!user.getPassword().equals(user.getRepeatPassword())) {
             result.rejectValue("repeatPassword", "", "Password do not match");
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("roles", roleRepository.findAll().stream().map(role -> new RoleDto(role.getId(), role.getName())).collect(Collectors.toList()));
             return "user_form";
         }
-
-//        if (user.getAge() > 25) {
-//            result.rejectValue("age", "", "Error message");
-//            return "user_form";
-//        }
-
         userService.save(user);
         return "redirect:/user";
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_SUPER_ADMIN"})
     public String deleteUser(@PathVariable("id") Long id) {
         logger.info("Deleting user with id {}", id);
 
