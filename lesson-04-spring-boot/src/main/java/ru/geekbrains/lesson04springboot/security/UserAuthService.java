@@ -1,7 +1,7 @@
 package ru.geekbrains.lesson04springboot.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.geekbrains.lesson04springboot.persist.Role;
 import ru.geekbrains.lesson04springboot.persist.UserRepository;
 
-import java.util.Collection;
-import java.util.Collections;
+
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserAuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -27,6 +25,7 @@ public class UserAuthService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    //   @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = userRepository.findByUsername(username)

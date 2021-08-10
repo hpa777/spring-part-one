@@ -2,6 +2,7 @@ package ru.geekbrains.lesson04springboot.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.lesson04springboot.controller.NotFoundException;
 import ru.geekbrains.lesson04springboot.controller.ProductListParams;
@@ -37,6 +38,7 @@ public class ProductResource {
                 .orElseThrow(() -> new NotFoundException("Product not found"));
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(produces = "application/json")
     public Product create(@RequestBody Product product) {
         if (product.getId() != null) {
@@ -46,6 +48,7 @@ public class ProductResource {
         return product;
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping(produces = "application/json")
     public void update(@RequestBody Product product) {
         if (product.getId() == null) {
@@ -54,6 +57,7 @@ public class ProductResource {
         productService.save(product);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public void delete(@PathVariable("id") Long id) {
         productService.deleteById(id);

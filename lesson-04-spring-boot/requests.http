@@ -1,17 +1,19 @@
 GET http://localhost:8080/spring-mvc-app/api/v1/product/7
+Authorization: Basic mem_user pass
 
 ###
 
 GET http://localhost:8080/spring-mvc-app/api/v1/product/all
-
+Authorization: Basic mem_user pass
 ###
 
 POST http://localhost:8080/spring-mvc-app/api/v1/product
+Authorization: Basic admin qwe123
 Content-Type: application/json
 
 {
-  "name": "create by rest",
-  "price": 3424.00
+  "name": "create by rest1",
+  "price": 34.00
 }
 
 ###
